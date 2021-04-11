@@ -63,6 +63,7 @@ namespace Browser
         private void Tab_ClickClose(object sender, RoutedEventArgs e)
         {
             products.Items.Remove((TabItem) ((StackPanel)((Button) sender).Parent).Parent);
+            _vm.CountForm -= 1;
         }
 
          private TabItem Create_tab(string url)
@@ -73,10 +74,22 @@ namespace Browser
             WebBrowser.FrameLoadEnd += Browser_OnFrameLoadEnd;
 
             StackPanel stack_PanelContentButton = new StackPanel{Orientation = Orientation.Horizontal};
-            stack_PanelContentButton.Children.Add(new Button{Content = "Back",Width = 50, Command = WebBrowser.BackCommand});
-            stack_PanelContentButton.Children.Add(new Button{Content = "Forward",Width = 50, Command = WebBrowser.ForwardCommand});
-            stack_PanelContentButton.Children.Add(new Button{Content = "Reload",Width = 50, Command = WebBrowser.ReloadCommand});
-            TextBox text_BlockAddress = new TextBox();
+            stack_PanelContentButton.Children.Add(new Button
+            {
+                Content = "🢀",Width = 50, Command = WebBrowser.BackCommand,
+                BorderThickness = new Thickness(0), FontSize = 15, Background = Brushes.Transparent
+            });
+            stack_PanelContentButton.Children.Add(new Button
+            {
+                Content = "🢂",Width = 50, Command = WebBrowser.ForwardCommand,
+                BorderThickness = new Thickness(0), FontSize = 15, Background = Brushes.Transparent
+            });
+            stack_PanelContentButton.Children.Add(new Button
+            {
+                Content = "⭮",Width = 50, Command = WebBrowser.ReloadCommand,
+                BorderThickness = new Thickness(0), FontSize = 15, Background = Brushes.Transparent
+            });
+            TextBox text_BlockAddress = new TextBox{Width = 1000};
             text_BlockAddress.SetBinding(TextBox.TextProperty, new Binding{Path = new PropertyPath("WebBrowser.Address"), Source = WebBrowser});
             stack_PanelContentButton.Children.Add(text_BlockAddress);
             
@@ -107,6 +120,7 @@ namespace Browser
 
             // --- Формирование TabItem --- //
             TabItem tab_Item = new TabItem();
+            tab_Item.SetBinding(TabItem.MaxWidthProperty, new Binding{Path = new PropertyPath("MaxWidthItem")});
             tab_Item.MouseEnter += Tab_OnFocusableChanged;
             tab_Item.MouseLeave += Tab_OnMouseDown;
             tab_Item.Header = stack_PanelHeader;
@@ -118,13 +132,22 @@ namespace Browser
          {
              this.Close();
          }
-
-         private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
          {
-             if (e.ChangedButton == MouseButton.Left)
-             {
-                 this.DragMove();
-             }
+             DragMove();
+         }
+
+         private void Window_ClickWrap(object sender, RoutedEventArgs e)
+         {
+             this.WindowState = WindowState.Minimized;
+         }
+
+         private bool IsMaximized;
+         private void Window_ClickWindowMode(object sender, RoutedEventArgs e)
+         {
+             this.WindowState = IsMaximized?WindowState.Normal:WindowState.Maximized;
+             IsMaximized = !IsMaximized;
+             ((Button) sender).Content = IsMaximized ?"❐":"□";
          }
     }
 }

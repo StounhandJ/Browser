@@ -6,13 +6,21 @@ namespace Browser.ViewModels
 {
     class MainViewModel : INotifyPropertyChanged
     {
-        private int _maxWidthItem = 60;
+        private int _maxWidthItem = 200;
         private int _countForm = 1;
+        private int _WidthWindow = 100;
         public int MaxWidthItem 
         {
             get
             {
-                return _maxWidthItem-(_countForm*10);
+                if (_countForm*_maxWidthItem>_WidthWindow-100)
+                {
+                    return (_WidthWindow - 100) / _countForm;
+                }
+                else
+                {
+                    return _maxWidthItem;
+                }
             }
             set 
             {
@@ -35,6 +43,22 @@ namespace Browser.ViewModels
 
                 _countForm = value;
                 this.OnPropertyChanged("MaxWidthItem");
+            }
+        }
+        
+        public int WidthWindow 
+        {
+            get
+            {
+                return _WidthWindow;
+            }
+            set 
+            {
+                if (_WidthWindow == value) return;
+
+                _WidthWindow = value;
+                this.OnPropertyChanged("MaxWidthItem");
+                this.OnPropertyChanged("WidthWindow");
             }
         }
 		

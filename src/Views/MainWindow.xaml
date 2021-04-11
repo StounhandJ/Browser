@@ -7,23 +7,53 @@
         xmlns:viewModels="clr-namespace:Browser.ViewModels"
         xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         mc:Ignorable="d"
-        Height="600" Width="900"
-        WindowStyle="None" ResizeMode="NoResize">
-    <Grid MouseDown="UIElement_OnMouseDown" Background="LightSeaGreen">
-        <TabControl x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
+        Height="600" Width="{Binding WidthWindow, Mode=TwoWay}"
+        MinWidth="680"
+        MinHeight="300"
+        WindowStyle="None" ResizeMode="CanResizeWithGrip" AllowsTransparency="True"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+    >
+    <Border Width="Auto" Height="Auto" Name="windowFrame"
+    
+            BorderBrush="#395984"
+            BorderThickness="1"
+            CornerRadius="0,20,30,40" >
+        <Border.Background>
+            <LinearGradientBrush >
+                <GradientBrush.GradientStops>
+                    <GradientStopCollection>
+                        <GradientStop Color="#E7EBF7" Offset="0.0"/>
+                        <GradientStop Color="#CEE3FF" Offset="0.5"/>
+  
+                    </GradientStopCollection>
+                </GradientBrush.GradientStops>
+            </LinearGradientBrush>
+        </Border.Background>
+    <Grid  Background="LightSeaGreen">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="25"/>
+        </Grid.ColumnDefinitions>
+        <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="2" x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
             <TabItem MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
-                        <Button Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="20" Background="Transparent" />
+                        <TextBlock MaxWidth="{Binding MaxWidthTextBlock}" Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
+                        <Button HorizontalAlignment="Right" Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="20" Background="Transparent" />
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="Back" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="50"/>
-                            <Button Content="Forward" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Grid.Column="1" Width="60"/>
-                            <Button Name="FF" Content="Reload" Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}" Grid.Column="1" Width="60"/>
+                            <Button Content="🢀" BorderThickness="0" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="50"/>
+                            <Button Content="🢂" BorderThickness="0" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Grid.Column="1" Width="60"/>
+                            <Button Content="⭮" BorderThickness="0" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}" Grid.Column="1" Width="60"/>
                             <TextBox Width="1000" Text="{Binding WebBrowser.Address , ElementName=Browser}"/>
                         </StackPanel>
                         <wpf:ChromiumWebBrowser FrameLoadStart="Browser_OnFrameLoadStart" FrameLoadEnd="Browser_OnFrameLoadEnd" Height="1000" x:Name="Browser" Address="google.com" />
@@ -34,16 +64,22 @@
             </TabItem>
         </TabControl>
         
-        <Button Click="Window_ClickClose" Foreground="LightYellow" BorderThickness="0" FontSize="20" Content="✖" Background="Transparent" Margin="862,-2,0,568" >
+        <Button Grid.Row="0" Grid.Column="3" Click="Window_ClickClose" Content="✖" Foreground="LightYellow" BorderThickness="0" FontSize="15" Background="Transparent" >
             <Button.Style>
                 <Style TargetType="Button" >
-                <Style.Triggers>
-                    <Trigger Property="Control.IsMouseOver" Value="True"> 
-                        <Setter Property="Foreground" Value="Red" /> 
-                    </Trigger>
-                </Style.Triggers>   
-            </Style>    
-        </Button.Style> 
+                    <Style.Triggers>
+                        <Trigger Property="Control.IsMouseOver" Value="True"> 
+                            <Setter Property="Foreground" Value="Red" /> 
+                        </Trigger>
+                    </Style.Triggers>   
+                </Style>    
+            </Button.Style> 
         </Button>
+        
+        <Button Grid.Row="0" Grid.Column="2" Click="Window_ClickWindowMode" Content="□" Foreground="LightYellow" BorderThickness="0" FontSize="25" Background="Transparent"></Button>
+        <Button Grid.Row="0" Grid.Column="1" Click="Window_ClickWrap" Content="_" Foreground="LightYellow" BorderThickness="0" FontSize="25" Background="Transparent" Margin="0 0 0 2"></Button>
     </Grid>
+    </Border>
 </Window>
+
+<!-- ❐ □ -->
