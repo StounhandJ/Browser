@@ -36,17 +36,18 @@ namespace Browser
                 products.Items[lastIndex] = tab_Item;
                 products.Items.Add(test);
                 products.SelectedIndex = lastIndex;
+                _vm.CountForm += 1;
             }
         }
 
         private void Browser_OnFrameLoadStart(object sender, FrameLoadStartEventArgs e)
         {
-            _vm.AppTitle = "Загрузка...";
+            
         }
 
         private void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            _vm.AppTitle = "Браузер";
+            
         }
         
         private void Tab_OnFocusableChanged(object sender, RoutedEventArgs routedEventArgs)
@@ -110,8 +111,20 @@ namespace Browser
             tab_Item.MouseLeave += Tab_OnMouseDown;
             tab_Item.Header = stack_PanelHeader;
             tab_Item.Content = stack_PanelContent;
-            _vm.AppTitle = "Загрузка...";
             return tab_Item;
         }
+
+         private void Window_ClickClose(object sender, RoutedEventArgs e)
+         {
+             this.Close();
+         }
+
+         private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+         {
+             if (e.ChangedButton == MouseButton.Left)
+             {
+                 this.DragMove();
+             }
+         }
     }
 }

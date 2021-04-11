@@ -7,13 +7,11 @@
         xmlns:viewModels="clr-namespace:Browser.ViewModels"
         xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         mc:Ignorable="d"
-        Title="{Binding AppTitle}" Height="600" Width="900">
-    <Window.DataContext>
-        <viewModels:MainViewModel/>
-    </Window.DataContext>
-    <Grid>
-        <TabControl x:Name="products" SelectionChanged="AddTab_OnMouseDown">
-            <TabItem x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
+        Height="600" Width="900"
+        WindowStyle="None" ResizeMode="NoResize">
+    <Grid MouseDown="UIElement_OnMouseDown" Background="LightSeaGreen">
+        <TabControl x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
+            <TabItem MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
@@ -34,7 +32,18 @@
             </TabItem>
             <TabItem x:Name="addTab" Height="30" Header="+">
             </TabItem>
-            
         </TabControl>
+        
+        <Button Click="Window_ClickClose" Foreground="LightYellow" BorderThickness="0" FontSize="20" Content="✖" Background="Transparent" Margin="862,-2,0,568" >
+            <Button.Style>
+                <Style TargetType="Button" >
+                <Style.Triggers>
+                    <Trigger Property="Control.IsMouseOver" Value="True"> 
+                        <Setter Property="Foreground" Value="Red" /> 
+                    </Trigger>
+                </Style.Triggers>   
+            </Style>    
+        </Button.Style> 
+        </Button>
     </Grid>
 </Window>

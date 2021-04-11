@@ -1,21 +1,40 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 
 
 namespace Browser.ViewModels
 {
     class MainViewModel : INotifyPropertyChanged
     {
-        private string _appTitle = "Браузер";
-
-        public string AppTitle 
+        private int _maxWidthItem = 60;
+        private int _countForm = 1;
+        public int MaxWidthItem 
         {
-            get { return _appTitle; }
+            get
+            {
+                return _maxWidthItem-(_countForm*10);
+            }
             set 
             {
-                if (_appTitle == value) return;
+                if (_maxWidthItem == value) return;
 
-                _appTitle = value;
-                this.OnPropertyChanged("AppTitle");
+                _maxWidthItem = value;
+                this.OnPropertyChanged("MaxWidthItem");
+            }
+        }
+        
+        public int CountForm 
+        {
+            get
+            {
+                return _countForm;
+            }
+            set 
+            {
+                if (_countForm == value) return;
+
+                _countForm = value;
+                this.OnPropertyChanged("MaxWidthItem");
             }
         }
 		
