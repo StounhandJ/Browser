@@ -45,18 +45,19 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock MaxWidth="{Binding MaxWidthTextBlock}" Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
-                        <Button HorizontalAlignment="Right" Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="20" Background="Transparent" />
+                        <Button HorizontalAlignment="Right" Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="{Binding WidthButtonClose}" Background="Transparent" />
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="🢀" BorderThickness="0" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="50"/>
-                            <Button Content="🢂" BorderThickness="0" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Grid.Column="1" Width="60"/>
-                            <Button Content="⭮" BorderThickness="0" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}" Grid.Column="1" Width="60"/>
-                            <TextBox Width="1000" Text="{Binding WebBrowser.Address , ElementName=Browser}"/>
+                            <Button Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="{Binding WidthBackButton}"/>
+                            <Button Content="🢂" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Width="{Binding WidthForwardButton}"/>
+                            <Button Content="⭮" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}" Width="{Binding WidthReloadButton}"/>
+                            <TextBox BorderBrush="Aqua" BorderThickness="1 0 0 2" Width="{Binding WidthTextBoxAddress}" Text="{Binding WebBrowser.Address , ElementName=Browser}"/>
+                            <Button Content="★" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.FavoritCommand, ElementName=Browser}" Width="{Binding WidthFavoritButton}"/>
                         </StackPanel>
-                        <wpf:ChromiumWebBrowser FrameLoadStart="Browser_OnFrameLoadStart" FrameLoadEnd="Browser_OnFrameLoadEnd" Height="1000" x:Name="Browser" Address="google.com" />
+                        <wpf:ChromiumWebBrowser BorderThickness="0 0 10 0" FrameLoadStart="Browser_OnFrameLoadStart" FrameLoadEnd="Browser_OnFrameLoadEnd" Height="1000" x:Name="Browser" Address="google.com" />
                     </StackPanel>
                 </TabItem.Content>
             </TabItem>

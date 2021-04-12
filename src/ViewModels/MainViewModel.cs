@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 
 
 namespace Browser.ViewModels
@@ -7,6 +6,7 @@ namespace Browser.ViewModels
     class MainViewModel : INotifyPropertyChanged
     {
         private int _maxWidthItem = 200;
+        private int _WidthButtonClose = 20;
         private int _countForm = 1;
         private int _WidthWindow = 100;
         public int MaxWidthItem 
@@ -28,9 +28,32 @@ namespace Browser.ViewModels
 
                 _maxWidthItem = value;
                 this.OnPropertyChanged("MaxWidthItem");
+                this.OnPropertyChanged("MaxWidthTextBlock");
+            }
+        }
+        public int MaxWidthTextBlock 
+        {
+            get
+            {
+                return MaxWidthItem - _WidthButtonClose-20;
+            }
+            set 
+            {
+                
             }
         }
         
+        public int WidthButtonClose 
+        {
+            get
+            {
+                return _WidthButtonClose;
+            }
+            set 
+            {
+                
+            }
+        }
         public int CountForm 
         {
             get
@@ -43,6 +66,7 @@ namespace Browser.ViewModels
 
                 _countForm = value;
                 this.OnPropertyChanged("MaxWidthItem");
+                this.OnPropertyChanged("MaxWidthTextBlock");
             }
         }
         
@@ -58,8 +82,83 @@ namespace Browser.ViewModels
 
                 _WidthWindow = value;
                 this.OnPropertyChanged("MaxWidthItem");
+                this.OnPropertyChanged("MaxWidthTextBlock");
                 this.OnPropertyChanged("WidthWindow");
+                update();
             }
+        }
+        
+        private int _widthButtonLast = 50;
+        private int _widthButtonNext = 50;
+        private int _widthButtonReload = 50;
+        private int _favoritCommand = 50;
+
+        public int WidthBackButton 
+        {
+            get
+            {
+                return _widthButtonLast;
+            }
+            set 
+            {
+                
+            }
+        }
+
+        public int WidthForwardButton 
+        {
+            get
+            {
+                return _widthButtonNext;
+            }
+            set 
+            {
+                
+            }
+        }
+        
+        public int WidthReloadButton 
+        {
+            get
+            {
+                return _widthButtonReload;
+            }
+            set 
+            {
+                
+            }
+        }
+        
+        public int WidthTextBoxAddress 
+        {
+            get
+            {
+                return _WidthWindow-_widthButtonLast-_widthButtonNext-_widthButtonReload-_favoritCommand;
+            }
+            set 
+            {
+                
+            }
+        }
+        
+        public int WidthFavoritButton 
+        {
+            get
+            {
+                return _favoritCommand;
+            }
+            set 
+            {
+                
+            }
+        }
+        public void update()
+        {
+            this.OnPropertyChanged("WidthBackButton");
+            this.OnPropertyChanged("WidthForwardButton");
+            this.OnPropertyChanged("WidthReloadButton");
+            this.OnPropertyChanged("WidthTextBoxAddress");
+            this.OnPropertyChanged("WidthFavoritButton");
         }
 		
         public event PropertyChangedEventHandler PropertyChanged;

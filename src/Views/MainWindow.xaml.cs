@@ -25,7 +25,8 @@ namespace Browser
             _vm = new MainViewModel();
             this.DataContext = _vm;
         }
-        
+
+        private int selectitem = 0;
         private void AddTab_OnMouseDown(object sender, SelectionChangedEventArgs  e)
         {
             if (e.AddedItems.Contains(addTab))
@@ -74,24 +75,43 @@ namespace Browser
             WebBrowser.FrameLoadEnd += Browser_OnFrameLoadEnd;
 
             StackPanel stack_PanelContentButton = new StackPanel{Orientation = Orientation.Horizontal};
-            stack_PanelContentButton.Children.Add(new Button
+            var BackButton = new Button
             {
-                Content = "🢀",Width = 50, Command = WebBrowser.BackCommand,
-                BorderThickness = new Thickness(0), FontSize = 15, Background = Brushes.Transparent
-            });
-            stack_PanelContentButton.Children.Add(new Button
+                Content = "🢀", Command = WebBrowser.BackCommand,
+                BorderThickness = new Thickness(1, 0, 0, 2), BorderBrush = Brushes.Aqua,
+                FontSize = 15, Background = Brushes.Transparent
+            };
+            var ForwardButton = new Button
             {
-                Content = "🢂",Width = 50, Command = WebBrowser.ForwardCommand,
-                BorderThickness = new Thickness(0), FontSize = 15, Background = Brushes.Transparent
-            });
-            stack_PanelContentButton.Children.Add(new Button
+                Content = "🢂", Command = WebBrowser.ForwardCommand,
+                BorderThickness = new Thickness(1,0,0,2), BorderBrush = Brushes.Aqua,
+                FontSize = 15, Background = Brushes.Transparent
+            };
+            var ReloadButton = new Button
             {
-                Content = "⭮",Width = 50, Command = WebBrowser.ReloadCommand,
-                BorderThickness = new Thickness(0), FontSize = 15, Background = Brushes.Transparent
-            });
-            TextBox text_BlockAddress = new TextBox{Width = 1000};
+                Content = "⭮", Command = WebBrowser.ReloadCommand,
+                BorderThickness = new Thickness(1,0,0,2), BorderBrush = Brushes.Aqua,
+                FontSize = 15, Background = Brushes.Transparent
+            };
+            var FavoritButton = new Button
+            {
+                Content = "★", 
+                BorderThickness = new Thickness(1,0,0,2), BorderBrush = Brushes.Aqua,
+                FontSize = 15, Background = Brushes.Transparent
+            };
+            BackButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthBackButton")});
+            ForwardButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthForwardButton")});
+            ReloadButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthReloadButton")});
+            FavoritButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthFavoritButton")});
+
+            TextBox text_BlockAddress = new TextBox{BorderThickness = new Thickness(1,0,0,2), BorderBrush = Brushes.Aqua};
             text_BlockAddress.SetBinding(TextBox.TextProperty, new Binding{Path = new PropertyPath("WebBrowser.Address"), Source = WebBrowser});
+            text_BlockAddress.SetBinding(TextBox.WidthProperty, new Binding{Path = new PropertyPath("WidthTextBoxAddress")});
+            stack_PanelContentButton.Children.Add(BackButton);
+            stack_PanelContentButton.Children.Add(ForwardButton);
+            stack_PanelContentButton.Children.Add(ReloadButton);
             stack_PanelContentButton.Children.Add(text_BlockAddress);
+            stack_PanelContentButton.Children.Add(FavoritButton);
             
             StackPanel stack_PanelContent = new StackPanel();
             stack_PanelContent.Children.Add(stack_PanelContentButton);
@@ -106,6 +126,7 @@ namespace Browser
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
             text_Block.SetBinding(TextBlock.TextProperty, new Binding{Path = new PropertyPath("WebBrowser.Title"), Source = WebBrowser});
+            text_Block.SetBinding(TextBlock.MaxWidthProperty, new Binding{Path = new PropertyPath("MaxWidthTextBlock")});
             stack_PanelHeader.Children.Add(text_Block);
             Button CloseButton = new Button
             {
@@ -115,6 +136,7 @@ namespace Browser
                 Visibility = Visibility.Hidden,
 
             };
+            CloseButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthButtonClose")});
             CloseButton.Click += Tab_ClickClose;
             stack_PanelHeader.Children.Add(CloseButton);
 
