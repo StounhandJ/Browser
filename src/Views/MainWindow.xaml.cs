@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -18,12 +20,15 @@ namespace Browser
     public partial class MainWindow
     {
         private MainViewModel _vm;
+        ObservableCollection<Favorite> favorits = new ObservableCollection<Favorite>();
 
         public MainWindow()
         {
             InitializeComponent();
             _vm = new MainViewModel();
             this.DataContext = _vm;
+            favorits.Add(new Favorite{title = "Яндекс", address = "yandex.ru"});
+            MenuFavorits.ItemsSource = favorits;
         }
 
         private int selectitem = 0;
@@ -63,7 +68,9 @@ namespace Browser
 
         private void Tab_ClickClose(object sender, RoutedEventArgs e)
         {
-            products.Items.Remove((TabItem) ((StackPanel)((Button) sender).Parent).Parent);
+            var index = products.Items.IndexOf((TabItem) ((StackPanel) ((Button) sender).Parent).Parent);
+            products.SelectedIndex = index==products.SelectedIndex?products.SelectedIndex-1:products.SelectedIndex;
+            products.Items.RemoveAt(index);
             _vm.CountForm -= 1;
         }
 
@@ -99,6 +106,7 @@ namespace Browser
                 BorderThickness = new Thickness(1,0,0,2), BorderBrush = Brushes.Aqua,
                 FontSize = 15, Background = Brushes.Transparent
             };
+            FavoritButton.Click += AddDelFavorite_OnClick;
             BackButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthBackButton")});
             ForwardButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthForwardButton")});
             ReloadButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthReloadButton")});
@@ -171,5 +179,36 @@ namespace Browser
              IsMaximized = !IsMaximized;
              ((Button) sender).Content = IsMaximized ?"❐":"□";
          }
+
+         private void OpenTabFavorite_OnClick(object sender, RoutedEventArgs e)
+         {
+             int lastIndex = products.Items.Count - 1;
+             var tab_Item = Create_tab(((MenuItem)sender).Uid);
+             var test = products.Items[lastIndex];
+             products.Items[lastIndex] = tab_Item;
+             products.Items.Add(test);
+             products.SelectedIndex = lastIndex;
+             _vm.CountForm += 1;
+         }
+
+         private void AddDelFavorite_OnClick(object sender, RoutedEventArgs e)
+         {
+             var browser = ((ChromiumWebBrowser)((StackPanel)((StackPanel)((Button)sender).Parent).Parent).Children[1]);
+             try
+             {
+                 favorits.Remove(favorits.Single(favorit => favorit.address == browser.Address));
+             }
+             catch (Exception exception)
+             {
+                 favorits.Add(new Favorite{title = browser.Title, address = browser.Address});
+
+             }
+         }
+    }
+
+    class Favorite
+    {
+        public string title { get; set; }
+        public string address { get; set; }
     }
 }
