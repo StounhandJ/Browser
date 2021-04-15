@@ -104,7 +104,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Click="ButtonBase_OnClick" Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent"/>
+                <Button Click="GridHistoryClose_OnClick" Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent"/>
                 <ListView MouseDoubleClick="ListBoxHistory_OnMouseDoubleClick" Width="{Binding WidthWindow}" Height="2000" Name="ListBoxHistory" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
 
 

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using Browser.ViewModels;
 using CefSharp;
 using CefSharp.Wpf;
+using Notifications.Wpf;
 
 namespace Browser
 {
@@ -23,6 +24,7 @@ namespace Browser
         private MainViewModel _vm;
         ObservableCollection<Favorite> favorits;
         List<History> historys;
+        private NotificationManager notificationManager = new NotificationManager();
 
         public MainWindow()
         {
@@ -209,10 +211,22 @@ namespace Browser
              try
              {
                  favorits.Remove(favorits.Single(favorit => favorit.address == browser.Address));
+                 notificationManager.Show(new NotificationContent
+                 {
+                     Title = "Закладка удалена",
+                     Message = browser.Title,
+                     Type = NotificationType.Error
+                 });
              }
              catch (Exception exception)
              {
                  favorits.Add(new Favorite{title = browser.Title, address = browser.Address});
+                 notificationManager.Show(new NotificationContent
+                 {
+                     Title = "Закладка добавлена",
+                     Message = browser.Title,
+                     Type = NotificationType.Success
+                 });
              }
              ManagementSave.saveFavoriteJSON(favorits);
          }
@@ -233,7 +247,7 @@ namespace Browser
              historyIndex = historys.Count() - 1;
          }
 
-         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+         private void GridHistoryClose_OnClick(object sender, RoutedEventArgs e)
          {
              GridHistory.Visibility = Visibility.Hidden;
              GridHistory.IsEnabled = false;
@@ -244,7 +258,16 @@ namespace Browser
 
          private void ListBoxHistory_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
          {
-             Clipboard.SetText(((String)ListBoxHistory.SelectedItem).Split(' ')[2]);
+             string text = ((String) ListBoxHistory.SelectedItem).Split(' ')[2];
+             
+             Clipboard.SetText(text);
+
+             notificationManager.Show(new NotificationContent
+             {
+                 Title = "Успешно скопиравано",
+                 Message = text,
+                 Type = NotificationType.Information
+             });
          }
     }
 }
