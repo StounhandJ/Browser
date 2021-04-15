@@ -20,18 +20,19 @@ namespace Browser
     public partial class MainWindow
     {
         private MainViewModel _vm;
-        ObservableCollection<Favorite> favorits = new ObservableCollection<Favorite>();
+        ObservableCollection<Favorite> favorits;
+        ObservableCollection<History> historys = new ObservableCollection<History>();
 
         public MainWindow()
         {
             InitializeComponent();
             _vm = new MainViewModel();
             this.DataContext = _vm;
-            favorits.Add(new Favorite{title = "Яндекс", address = "yandex.ru"});
+            favorits = ManagementSave.loadFavoriteJSON();
             MenuFavorits.ItemsSource = favorits;
+            MenuHistory.ItemsSource = historys;
         }
-
-        private int selectitem = 0;
+        
         private void AddTab_OnMouseDown(object sender, SelectionChangedEventArgs  e)
         {
             if (e.AddedItems.Contains(addTab))
@@ -53,7 +54,7 @@ namespace Browser
 
         private void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            
+            historys.Add(new History{address = e.Url});
         }
         
         private void Tab_OnFocusableChanged(object sender, RoutedEventArgs routedEventArgs)
@@ -201,14 +202,8 @@ namespace Browser
              catch (Exception exception)
              {
                  favorits.Add(new Favorite{title = browser.Title, address = browser.Address});
-
              }
+             ManagementSave.saveFavoriteJSON(favorits);
          }
-    }
-
-    class Favorite
-    {
-        public string title { get; set; }
-        public string address { get; set; }
     }
 }

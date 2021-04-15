@@ -29,72 +29,77 @@
                 </GradientBrush.GradientStops>
             </LinearGradientBrush>
         </Border.Background>
-    <Grid  Background="LightSeaGreen">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="35" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="25"/>
-            <ColumnDefinition Width="25"/>
-            <ColumnDefinition Width="25"/>
-            <ColumnDefinition Width="25"/>
-        </Grid.ColumnDefinitions>
-        <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
-            <TabItem MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock MaxWidth="{Binding MaxWidthTextBlock}" Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
-                        <Button HorizontalAlignment="Right" Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="{Binding WidthButtonClose}" Background="Transparent" />
-                    </StackPanel>
-                </TabItem.Header>
-                <TabItem.Content>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="{Binding WidthBackButton}"/>
-                            <Button Content="🢂" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Width="{Binding WidthForwardButton}"/>
-                            <Button Content="⭮" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}" Width="{Binding WidthReloadButton}"/>
-                            <TextBox BorderBrush="Aqua" BorderThickness="1 0 0 2" Width="{Binding WidthTextBoxAddress}" Text="{Binding WebBrowser.Address , ElementName=Browser}"/>
-                            <Button Content="★" Click="AddDelFavorite_OnClick" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Width="{Binding WidthFavoritButton}"/>
-                        </StackPanel>
-                        <wpf:ChromiumWebBrowser BorderThickness="0 0 10 0" FrameLoadStart="Browser_OnFrameLoadStart" FrameLoadEnd="Browser_OnFrameLoadEnd" Height="1000" x:Name="Browser" Address="google.com" />
-                    </StackPanel>
-                </TabItem.Content>
-            </TabItem>
-            <TabItem x:Name="addTab" Height="30" Header="+">
-            </TabItem>
-        </TabControl>
-        
-        <Button Grid.Row="0" Grid.Column="4" Click="Window_ClickClose" Content="✖" Foreground="LightYellow" BorderThickness="0" FontSize="15" Background="Transparent" >
-            <Button.Style>
-                <Style TargetType="Button" >
-                    <Style.Triggers>
-                        <Trigger Property="Control.IsMouseOver" Value="True"> 
-                            <Setter Property="Foreground" Value="Red" /> 
-                        </Trigger>
-                    </Style.Triggers>   
-                </Style>    
-            </Button.Style> 
-        </Button>
-        
-        <Button Grid.Row="0" Grid.Column="3" Click="Window_ClickWindowMode" Content="□" Foreground="LightYellow" BorderThickness="0" FontSize="25" Background="Transparent"></Button>
-        <Button Grid.Row="0" Grid.Column="2" Click="Window_ClickWrap" Content="_" Foreground="LightYellow" BorderThickness="0" FontSize="25" Background="Transparent" Margin="0 0 0 2"></Button>
-        
-        <Menu Grid.Row="0" Grid.Column="1" Foreground="LightYellow" Background="Transparent">
-            <MenuItem Header="⋮" FontSize="25">
-                <MenuItem FontSize="15" Background="LightSeaGreen" Header="История" ></MenuItem>
-                <MenuItem Name="MenuFavorits" FontSize="15" Background="LightSeaGreen" Header="Закладки" >
-                    <MenuItem.ItemTemplate>
-                        <DataTemplate>
-                            <MenuItem Click="OpenTabFavorite_OnClick" FontSize="15" Background="LightSeaGreen" Header="{Binding title}" Uid="{Binding address}"/>
-                        </DataTemplate>
-                    </MenuItem.ItemTemplate>
-                </MenuItem>
-            </MenuItem>
-        </Menu>
-        
-    </Grid>
+        <Grid>
+            <Grid  Background="LightSeaGreen">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="25"/>
+                </Grid.ColumnDefinitions>
+                <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
+                    <TabItem MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock MaxWidth="{Binding MaxWidthTextBlock}" Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
+                                <Button HorizontalAlignment="Right" Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="{Binding WidthButtonClose}" Background="Transparent" />
+                            </StackPanel>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="{Binding WidthBackButton}"/>
+                                    <Button Content="🢂" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Width="{Binding WidthForwardButton}"/>
+                                    <Button Content="⭮" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}" Width="{Binding WidthReloadButton}"/>
+                                    <TextBox BorderBrush="Aqua" BorderThickness="1 0 0 2" Width="{Binding WidthTextBoxAddress}" Text="{Binding WebBrowser.Address , ElementName=Browser}"/>
+                                    <Button Content="★" Click="AddDelFavorite_OnClick" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Width="{Binding WidthFavoritButton}"/>
+                                </StackPanel>
+                                <wpf:ChromiumWebBrowser BorderThickness="0 0 10 0" FrameLoadStart="Browser_OnFrameLoadStart" FrameLoadEnd="Browser_OnFrameLoadEnd" Height="1000" x:Name="Browser" Address="google.com" />
+                            </StackPanel>
+                        </TabItem.Content>
+                    </TabItem>
+                    <TabItem x:Name="addTab" Height="30" Header="+">
+                    </TabItem>
+                </TabControl>
+                
+                <Button Grid.Row="0" Grid.Column="4" Click="Window_ClickClose" Content="✖" Foreground="LightYellow" BorderThickness="0" FontSize="15" Background="Transparent" >
+                    <Button.Style>
+                        <Style TargetType="Button" >
+                            <Style.Triggers>
+                                <Trigger Property="Control.IsMouseOver" Value="True"> 
+                                    <Setter Property="Foreground" Value="Red" /> 
+                                </Trigger>
+                            </Style.Triggers>   
+                        </Style>    
+                    </Button.Style> 
+                </Button>
+                
+                <Button Grid.Row="0" Grid.Column="3" Click="Window_ClickWindowMode" Content="□" Foreground="LightYellow" BorderThickness="0" FontSize="25" Background="Transparent"></Button>
+                <Button Grid.Row="0" Grid.Column="2" Click="Window_ClickWrap" Content="_" Foreground="LightYellow" BorderThickness="0" FontSize="25" Background="Transparent" Margin="0 0 0 2"></Button>
+                
+                <Menu Grid.Row="0" Grid.Column="1" Foreground="LightYellow" Background="Transparent">
+                    <MenuItem Header="⋮" FontSize="25">
+                        <MenuItem Name="MenuHistory" FontSize="15" Background="LightSeaGreen" Header="История" />
+                        <MenuItem Name="MenuFavorits" FontSize="15" Background="LightSeaGreen" Header="Закладки" >
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Click="OpenTabFavorite_OnClick" FontSize="15" Background="LightSeaGreen" Header="{Binding title}" Uid="{Binding address}"/>
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+                
+            </Grid>
+            <Grid Visibility="Hidden" IsEnabled="False">
+                
+            </Grid>
+        </Grid>
     </Border>
 </Window>
 
