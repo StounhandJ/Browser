@@ -30,7 +30,7 @@
             </LinearGradientBrush>
         </Border.Background>
         <Grid>
-            <Grid  Background="LightSeaGreen">
+            <Grid Name="GridMain" Background="LightSeaGreen">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35" />
                     <RowDefinition />
@@ -56,7 +56,7 @@
                                     <Button Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="{Binding WidthBackButton}"/>
                                     <Button Content="🢂" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Width="{Binding WidthForwardButton}"/>
                                     <Button Content="⭮" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}" Width="{Binding WidthReloadButton}"/>
-                                    <TextBox BorderBrush="Aqua" BorderThickness="1 0 0 2" Width="{Binding WidthTextBoxAddress}" Text="{Binding WebBrowser.Address , ElementName=Browser}"/>
+                                    <TextBox BorderBrush="Aqua" KeyUp="Address_OnKeyUp" BorderThickness="1 0 0 2" Width="{Binding WidthTextBoxAddress}" Text="{Binding WebBrowser.Address , ElementName=Browser}"/>
                                     <Button Content="★" Click="AddDelFavorite_OnClick" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent" Width="{Binding WidthFavoritButton}"/>
                                 </StackPanel>
                                 <wpf:ChromiumWebBrowser BorderThickness="0 0 10 0" FrameLoadStart="Browser_OnFrameLoadStart" FrameLoadEnd="Browser_OnFrameLoadEnd" Height="1000" x:Name="Browser" Address="google.com" />
@@ -84,7 +84,7 @@
                 
                 <Menu Grid.Row="0" Grid.Column="1" Foreground="LightYellow" Background="Transparent">
                     <MenuItem Header="⋮" FontSize="25">
-                        <MenuItem Name="MenuHistory" FontSize="15" Background="LightSeaGreen" Header="История" />
+                        <MenuItem Name="MenuHistory" FontSize="15" Background="LightSeaGreen" Header="История" Click="MenuHistoryVisible_OnClick"/>
                         <MenuItem Name="MenuFavorits" FontSize="15" Background="LightSeaGreen" Header="Закладки" >
                             <MenuItem.ItemTemplate>
                                 <DataTemplate>
@@ -96,8 +96,18 @@
                 </Menu>
                 
             </Grid>
-            <Grid Visibility="Hidden" IsEnabled="False">
-                
+            <Grid Name="GridHistory" Visibility="Hidden" IsEnabled="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Click="ButtonBase_OnClick" Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent"/>
+                <ListView MouseDoubleClick="ListBoxHistory_OnMouseDoubleClick" Width="{Binding WidthWindow}" Height="2000" Name="ListBoxHistory" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+
+
             </Grid>
         </Grid>
     </Border>

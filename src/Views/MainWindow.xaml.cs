@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Browser
     {
         private MainViewModel _vm;
         ObservableCollection<Favorite> favorits;
-        ObservableCollection<History> historys = new ObservableCollection<History>();
+        List<History> historys;
 
         public MainWindow()
         {
@@ -29,8 +30,8 @@ namespace Browser
             _vm = new MainViewModel();
             this.DataContext = _vm;
             favorits = ManagementSave.loadFavoriteJSON();
+            historys = ManagementSave.loadHistoryJSON();
             MenuFavorits.ItemsSource = favorits;
-            MenuHistory.ItemsSource = historys;
         }
         
         private void AddTab_OnMouseDown(object sender, SelectionChangedEventArgs  e)
@@ -54,7 +55,8 @@ namespace Browser
 
         private void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            historys.Add(new History{address = e.Url});
+            historys.Add(new History{address = e.Url, date = DateTime.Now});
+            ManagementSave.saveHistoryJSON(historys);
         }
         
         private void Tab_OnFocusableChanged(object sender, RoutedEventArgs routedEventArgs)
@@ -73,6 +75,15 @@ namespace Browser
             products.SelectedIndex = index==products.SelectedIndex?products.SelectedIndex-1:products.SelectedIndex;
             products.Items.RemoveAt(index);
             _vm.CountForm -= 1;
+        }
+        
+        private void Address_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                var browser = (ChromiumWebBrowser)((StackPanel)((StackPanel)((TextBox) sender).Parent).Parent).Children[1];
+                browser.Load(((TextBox) sender).Text);
+            }
         }
 
          private TabItem Create_tab(string url)
@@ -204,6 +215,36 @@ namespace Browser
                  favorits.Add(new Favorite{title = browser.Title, address = browser.Address});
              }
              ManagementSave.saveFavoriteJSON(favorits);
+         }
+
+         private int historyIndex = 0;
+         private void MenuHistoryVisible_OnClick(object sender, RoutedEventArgs e)
+         {
+             GridHistory.Visibility = Visibility.Visible;
+             GridHistory.IsEnabled = true;
+             
+             GridMain.Visibility = Visibility.Hidden;
+             GridMain.IsEnabled = false;
+             for (int i = historyIndex; i < historys.Count-1; i++)
+             {
+                 ListBoxHistory.Items.Add(historys[i].date+": "+historys[i].address);
+             }
+
+             historyIndex = historys.Count() - 1;
+         }
+
+         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+         {
+             GridHistory.Visibility = Visibility.Hidden;
+             GridHistory.IsEnabled = false;
+             
+             GridMain.Visibility = Visibility.Visible;
+             GridMain.IsEnabled = true;
+         }
+
+         private void ListBoxHistory_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+         {
+             Clipboard.SetText(((String)ListBoxHistory.SelectedItem).Split(' ')[2]);
          }
     }
 }
