@@ -217,7 +217,7 @@ namespace Browser
             GridMain.IsEnabled = false;
             for (int i = historyIndex; i < historys.Count-1; i++)
             {
-                ListBoxHistory.Items.Add(historys[i].date+": "+historys[i].address);
+                ListViewHistory.Items.Add(historys[i].date+": "+historys[i].address);
             }
 
             historyIndex = historys.Count() - 1;
@@ -240,8 +240,11 @@ namespace Browser
 
         private async void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            historys.Add(new History{address = e.Url, date = DateTime.Now});
-            await ManagementSave.saveHistoryJSON(historys);
+            if (e.Url!="about:blank")
+            {
+                historys.Add(new History{address = e.Url, date = DateTime.Now});
+                await ManagementSave.saveHistoryJSON(historys);
+            }
         }
 
         // Windows Event //
@@ -288,11 +291,20 @@ namespace Browser
              AddTab("google.com");
          }
          
+         private async void HistoryDelete_OnClick(object sender, RoutedEventArgs e)
+         {
+             string text = (string) ListViewHistory.SelectedItem;
+             string data = text.Split(' ')[0] + " " +text.Split(' ')[1];
+             var history = historys.Find((his) => his.address == text.Split(' ')[2]);
+             historys.Remove(history);
+             ListViewHistory.Items.Remove(ListViewHistory.SelectedItem);
+             await ManagementSave.saveHistoryJSON(historys);
+         }
          // other methods //
          
          private void ListBoxHistory_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
          {
-             string text = ((String) ListBoxHistory.SelectedItem).Split(' ')[2];
+             string text = ((String) ListViewHistory.SelectedItem).Split(' ')[2];
              
              Clipboard.SetText(text);
 

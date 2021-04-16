@@ -119,7 +119,13 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Button Click="GridHistoryClose_OnClick" Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent"/>
-                <ListView MouseDoubleClick="ListBoxHistory_OnMouseDoubleClick" Width="{Binding WidthWindow}" Height="2000" Name="ListBoxHistory" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                <ListView Name="ListViewHistory" MouseDoubleClick="ListBoxHistory_OnMouseDoubleClick" Width="{Binding WidthWindow}" Height="2000" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top">
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Click="HistoryDelete_OnClick" Header="Удалить"></MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
 
 
             </Grid>
