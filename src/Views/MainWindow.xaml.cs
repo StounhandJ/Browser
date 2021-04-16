@@ -299,5 +299,16 @@ namespace Browser
              products.SelectedIndex = lastIndex;
              _vm.CountForm += 1;
          }
+
+         private void newTab_OnClick(object sender, RoutedEventArgs e)
+         {
+             int lastIndex = products.Items.Count - 1;
+             var tab_Item = Create_tab("google.com");
+             var test = products.Items[lastIndex];
+             products.Items[lastIndex] = tab_Item;
+             products.Items.Add(test);
+             products.SelectedIndex = lastIndex;
+             _vm.CountForm += 1;
+         }
     }
 }

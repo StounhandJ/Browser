@@ -42,6 +42,11 @@
                     <ColumnDefinition Width="25"/>
                     <ColumnDefinition Width="25"/>
                 </Grid.ColumnDefinitions>
+                <Grid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Click="newTab_OnClick" Header="Новая вкладка"></MenuItem>
+                        </ContextMenu>
+                </Grid.ContextMenu>
                 <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
                     <TabItem MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
                         <TabItem.Header>
