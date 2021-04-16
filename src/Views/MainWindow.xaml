@@ -44,7 +44,8 @@
                 </Grid.ColumnDefinitions>
                 <Grid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Click="newTab_OnClick" Header="Новая вкладка"></MenuItem>
+                            <MenuItem Click="newTab_OnClick" Header="Новая вкладка"/>
+                            <MenuItem Click="newTabIncognito_OnClick" Header="Инкогнито вкладка"/>
                         </ContextMenu>
                 </Grid.ContextMenu>
                 <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">

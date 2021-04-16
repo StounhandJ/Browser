@@ -38,10 +38,10 @@ namespace Browser
         }
         
         // Create TabItem //
-        private void AddTab(string url)
+        private void AddTab(string url, bool incognito = false)
         {
             int lastIndex = products.Items.Count - 1;
-            var tab_Item = Create_tab(url);
+            var tab_Item = Create_tab(url, incognito);
             var tabAdd = products.Items[lastIndex];
             products.Items[lastIndex] = tab_Item;
             products.Items.Add(tabAdd);
@@ -49,13 +49,12 @@ namespace Browser
             _vm.CountForm += 1;
         }
         
-        private TabItem Create_tab(string url)
+        private TabItem Create_tab(string url, bool incognito = false)
         {
             // --- Контент --- //
             ChromiumWebBrowser WebBrowser = new ChromiumWebBrowser(){Address = url, Title = "Загрузка...", Height = 1000};
             WebBrowser.FrameLoadStart += Browser_OnFrameLoadStart;
-            WebBrowser.FrameLoadEnd += Browser_OnFrameLoadEnd;
-
+            if (!incognito) WebBrowser.FrameLoadEnd += Browser_OnFrameLoadEnd;
             StackPanel stack_PanelContentButton = new StackPanel{Orientation = Orientation.Horizontal};
             var BackButton = new Button
             {
@@ -88,6 +87,7 @@ namespace Browser
             FavoritButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthFavoritButton")});
 
             TextBox text_BlockAddress = new TextBox{BorderThickness = new Thickness(1,0,0,2), BorderBrush = Brushes.Aqua};
+            text_BlockAddress.KeyUp += Address_OnKeyUp;
             text_BlockAddress.SetBinding(TextBox.TextProperty, new Binding{Path = new PropertyPath("WebBrowser.Address"), Source = WebBrowser});
             text_BlockAddress.SetBinding(TextBox.WidthProperty, new Binding{Path = new PropertyPath("WidthTextBoxAddress")});
             stack_PanelContentButton.Children.Add(BackButton);
@@ -108,7 +108,6 @@ namespace Browser
                 Margin = new Thickness(5),
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
-            text_Block.KeyUp += Address_OnKeyUp;
             text_Block.SetBinding(TextBlock.TextProperty, new Binding{Path = new PropertyPath("WebBrowser.Title"), Source = WebBrowser});
             text_Block.SetBinding(TextBlock.MaxWidthProperty, new Binding{Path = new PropertyPath("MaxWidthTextBlock")});
             stack_PanelHeader.Children.Add(text_Block);
@@ -132,6 +131,7 @@ namespace Browser
 
             // --- Формирование TabItem --- //
             TabItem tab_Item = new TabItem();
+            if (incognito) tab_Item.Background = Brushes.Gray;
             tab_Item.SetBinding(TabItem.MaxWidthProperty, new Binding{Path = new PropertyPath("MaxWidthItem")});
             tab_Item.MouseEnter += Tab_OnFocusableChanged;
             tab_Item.MouseLeave += Tab_OnMouseDown;
@@ -215,7 +215,7 @@ namespace Browser
              
             GridMain.Visibility = Visibility.Hidden;
             GridMain.IsEnabled = false;
-            for (int i = historyIndex; i < historys.Count-1; i++)
+            for (int i = historys.Count-1; i > historyIndex; i--)
             {
                 ListViewHistory.Items.Add(historys[i].date+": "+historys[i].address);
             }
@@ -291,14 +291,33 @@ namespace Browser
              AddTab("google.com");
          }
          
+         private void newTabIncognito_OnClick(object sender, RoutedEventArgs e)
+         {
+             AddTab("google.com", true);
+             notificationManager.Show(new NotificationContent
+             {
+                 Title = "Вы в инкогнит режиме",
+                 Type = NotificationType.Information
+             });
+         }
+         
          private async void HistoryDelete_OnClick(object sender, RoutedEventArgs e)
          {
-             string text = (string) ListViewHistory.SelectedItem;
-             string data = text.Split(' ')[0] + " " +text.Split(' ')[1];
-             var history = historys.Find((his) => his.address == text.Split(' ')[2]);
-             historys.Remove(history);
-             ListViewHistory.Items.Remove(ListViewHistory.SelectedItem);
-             await ManagementSave.saveHistoryJSON(historys);
+             if (ListViewHistory.SelectedItem!=null)
+             {
+                 string text = (string) ListViewHistory.SelectedItem;
+                 string data = text.Split(' ')[0] + " " +text.Split(' ')[1];
+                 var history = historys.Find((his) => his.address == text.Split(' ')[2]);
+                 historys.Remove(history);
+                 ListViewHistory.Items.Remove(ListViewHistory.SelectedItem);
+                 await ManagementSave.saveHistoryJSON(historys);
+                 notificationManager.Show(new NotificationContent
+                 {
+                     Title = "Запись из истроии удалена",
+                     Message = text.Split(' ')[2],
+                     Type = NotificationType.Error
+                 });
+             }
          }
          // other methods //
          
