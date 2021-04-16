@@ -37,60 +37,19 @@ namespace Browser
             MenuFavorits.ItemsSource = favorits;
         }
         
-        private void AddTab_OnMouseDown(object sender, SelectionChangedEventArgs  e)
+        // Create TabItem //
+        private void AddTab(string url)
         {
-            if (e.AddedItems.Contains(addTab))
-            {
-                int lastIndex = products.Items.Count - 1;
-                var tab_Item = Create_tab("google.com");
-                var test = products.Items[lastIndex];
-                products.Items[lastIndex] = tab_Item;
-                products.Items.Add(test);
-                products.SelectedIndex = lastIndex;
-                _vm.CountForm += 1;
-            }
-        }
-
-        private void Browser_OnFrameLoadStart(object sender, FrameLoadStartEventArgs e)
-        {
-            
-        }
-
-        private async void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
-        {
-            historys.Add(new History{address = e.Url, date = DateTime.Now});
-            await ManagementSave.saveHistoryJSON(historys);
+            int lastIndex = products.Items.Count - 1;
+            var tab_Item = Create_tab(url);
+            var tabAdd = products.Items[lastIndex];
+            products.Items[lastIndex] = tab_Item;
+            products.Items.Add(tabAdd);
+            products.SelectedIndex = lastIndex;
+            _vm.CountForm += 1;
         }
         
-        private void Tab_OnFocusableChanged(object sender, RoutedEventArgs routedEventArgs)
-        {
-            ((StackPanel)((ContentControl)((TabItem)sender).Header).Content).Children[1].Visibility = Visibility.Visible;
-            TabFocusable = (TabItem)sender;
-        }
-
-        private void Tab_OnMouseDown(object sender, MouseEventArgs mouseEventArgs)
-        {
-            ((StackPanel)((ContentControl)((TabItem)sender).Header).Content).Children[1].Visibility = Visibility.Hidden;
-        }
-
-        private void Tab_ClickClose(object sender, RoutedEventArgs e)
-        {
-            var index = products.Items.IndexOf((TabItem) ((StackPanel) ((Button) sender).Parent).Parent);
-            products.SelectedIndex = index==products.SelectedIndex?products.SelectedIndex-1:products.SelectedIndex;
-            products.Items.RemoveAt(index);
-            _vm.CountForm -= 1;
-        }
-        
-        private void Address_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.Enter)
-            {
-                var browser = (ChromiumWebBrowser)((StackPanel)((StackPanel)((TextBox) sender).Parent).Parent).Children[1];
-                browser.Load(((TextBox) sender).Text);
-            }
-        }
-
-         private TabItem Create_tab(string url)
+        private TabItem Create_tab(string url)
         {
             // --- Контент --- //
             ChromiumWebBrowser WebBrowser = new ChromiumWebBrowser(){Address = url, Title = "Загрузка...", Height = 1000};
@@ -180,6 +139,132 @@ namespace Browser
             tab_Item.Content = stack_PanelContent;
             return tab_Item;
         }
+        
+        // Tab Event //
+        
+        private void AddTab_OnMouseDown(object sender, SelectionChangedEventArgs  e)
+        {
+            if (e.AddedItems.Contains(addTab))
+            {
+                AddTab("google.com");
+            }
+        }
+        
+        private void Tab_OnFocusableChanged(object sender, RoutedEventArgs routedEventArgs)
+        {
+            ((StackPanel)((ContentControl)((TabItem)sender).Header).Content).Children[1].Visibility = Visibility.Visible;
+            TabFocusable = (TabItem)sender;
+        }
+
+        private void Tab_OnMouseDown(object sender, MouseEventArgs mouseEventArgs)
+        {
+            ((StackPanel)((ContentControl)((TabItem)sender).Header).Content).Children[1].Visibility = Visibility.Hidden;
+        }
+        
+        // Button Event //
+        
+        private async void AddDelFavorite_OnClick(object sender, RoutedEventArgs e)
+        {
+            var browser = getChromiumWebBrowser(getFocusableTabItem());
+            try
+            {
+                favorits.Remove(favorits.Single(favorit => favorit.address == browser.Address));
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "Закладка удалена",
+                    Message = browser.Title,
+                    Type = NotificationType.Error
+                });
+            }
+            catch (Exception exception)
+            {
+                favorits.Add(new Favorite{title = browser.Title, address = browser.Address});
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "Закладка добавлена",
+                    Message = browser.Title,
+                    Type = NotificationType.Success
+                });
+            }
+            await ManagementSave.saveFavoriteJSON(favorits);
+        }
+        
+        private void Tab_ClickClose(object sender, RoutedEventArgs e)
+        {
+            var index = products.Items.IndexOf(getFocusableTabItem());
+            products.SelectedIndex = index==products.SelectedIndex?products.SelectedIndex-1:products.SelectedIndex;
+            products.Items.RemoveAt(index);
+            _vm.CountForm -= 1;
+        }
+
+        private void Window_ClickClose(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        
+        private void OpenTabFavorite_OnClick(object sender, RoutedEventArgs e)
+        {
+            AddTab(((MenuItem)sender).Uid);
+        }
+
+        private int historyIndex = 0;
+        private void MenuHistoryVisible_OnClick(object sender, RoutedEventArgs e)
+        {
+            GridHistory.Visibility = Visibility.Visible;
+            GridHistory.IsEnabled = true;
+             
+            GridMain.Visibility = Visibility.Hidden;
+            GridMain.IsEnabled = false;
+            for (int i = historyIndex; i < historys.Count-1; i++)
+            {
+                ListBoxHistory.Items.Add(historys[i].date+": "+historys[i].address);
+            }
+
+            historyIndex = historys.Count() - 1;
+        }
+
+        private void GridHistoryClose_OnClick(object sender, RoutedEventArgs e)
+        {
+            GridHistory.Visibility = Visibility.Hidden;
+            GridHistory.IsEnabled = false;
+             
+            GridMain.Visibility = Visibility.Visible;
+            GridMain.IsEnabled = true;
+        }
+        
+        // Browser Event //
+        private void Browser_OnFrameLoadStart(object sender, FrameLoadStartEventArgs e)
+        {
+            
+        }
+
+        private async void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
+        {
+            historys.Add(new History{address = e.Url, date = DateTime.Now});
+            await ManagementSave.saveHistoryJSON(historys);
+        }
+
+        // Windows Event //
+        
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
+        
+        private void Window_ClickWrap(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private bool IsMaximized;
+        private void Window_ClickWindowMode(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = IsMaximized?WindowState.Normal:WindowState.Maximized;
+            IsMaximized = !IsMaximized;
+            ((Button) sender).Content = IsMaximized ?"❐":"□";
+        }
+
+        // Methods TabItem //         
 
          private TabItem getFocusableTabItem()
          {
@@ -190,91 +275,21 @@ namespace Browser
          {
              return (ChromiumWebBrowser)((StackPanel)tabitem.Content).Children[1];
          }
+         
 
-         private void Window_ClickClose(object sender, RoutedEventArgs e)
+         // ContextMenu Event //
+         private void DuplicateTab_OnClick(object sender, RoutedEventArgs e)
          {
-             this.Close();
-         }
-         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-         {
-             DragMove();
+             AddTab(getChromiumWebBrowser(getFocusableTabItem()).Address);
          }
 
-         private void Window_ClickWrap(object sender, RoutedEventArgs e)
+         private void newTab_OnClick(object sender, RoutedEventArgs e)
          {
-             this.WindowState = WindowState.Minimized;
+             AddTab("google.com");
          }
-
-         private bool IsMaximized;
-         private void Window_ClickWindowMode(object sender, RoutedEventArgs e)
-         {
-             this.WindowState = IsMaximized?WindowState.Normal:WindowState.Maximized;
-             IsMaximized = !IsMaximized;
-             ((Button) sender).Content = IsMaximized ?"❐":"□";
-         }
-
-         private void OpenTabFavorite_OnClick(object sender, RoutedEventArgs e)
-         {
-             int lastIndex = products.Items.Count - 1;
-             var tab_Item = Create_tab(((MenuItem)sender).Uid);
-             var test = products.Items[lastIndex];
-             products.Items[lastIndex] = tab_Item;
-             products.Items.Add(test);
-             products.SelectedIndex = lastIndex;
-             _vm.CountForm += 1;
-         }
-
-         private async void AddDelFavorite_OnClick(object sender, RoutedEventArgs e)
-         {
-             var browser = ((ChromiumWebBrowser)((StackPanel)((StackPanel)((Button)sender).Parent).Parent).Children[1]);
-             try
-             {
-                 favorits.Remove(favorits.Single(favorit => favorit.address == browser.Address));
-                 notificationManager.Show(new NotificationContent
-                 {
-                     Title = "Закладка удалена",
-                     Message = browser.Title,
-                     Type = NotificationType.Error
-                 });
-             }
-             catch (Exception exception)
-             {
-                 favorits.Add(new Favorite{title = browser.Title, address = browser.Address});
-                 notificationManager.Show(new NotificationContent
-                 {
-                     Title = "Закладка добавлена",
-                     Message = browser.Title,
-                     Type = NotificationType.Success
-                 });
-             }
-             await ManagementSave.saveFavoriteJSON(favorits);
-         }
-
-         private int historyIndex = 0;
-         private void MenuHistoryVisible_OnClick(object sender, RoutedEventArgs e)
-         {
-             GridHistory.Visibility = Visibility.Visible;
-             GridHistory.IsEnabled = true;
-             
-             GridMain.Visibility = Visibility.Hidden;
-             GridMain.IsEnabled = false;
-             for (int i = historyIndex; i < historys.Count-1; i++)
-             {
-                 ListBoxHistory.Items.Add(historys[i].date+": "+historys[i].address);
-             }
-
-             historyIndex = historys.Count() - 1;
-         }
-
-         private void GridHistoryClose_OnClick(object sender, RoutedEventArgs e)
-         {
-             GridHistory.Visibility = Visibility.Hidden;
-             GridHistory.IsEnabled = false;
-             
-             GridMain.Visibility = Visibility.Visible;
-             GridMain.IsEnabled = true;
-         }
-
+         
+         // other methods //
+         
          private void ListBoxHistory_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
          {
              string text = ((String) ListBoxHistory.SelectedItem).Split(' ')[2];
@@ -288,27 +303,14 @@ namespace Browser
                  Type = NotificationType.Information
              });
          }
-
-         private void DuplicateTab_OnClick(object sender, RoutedEventArgs e)
+         
+         private void Address_OnKeyUp(object sender, KeyEventArgs e)
          {
-             int lastIndex = products.Items.Count - 1;
-             var tab_Item = Create_tab(getChromiumWebBrowser(getFocusableTabItem()).Address);
-             var test = products.Items[lastIndex];
-             products.Items[lastIndex] = tab_Item;
-             products.Items.Add(test);
-             products.SelectedIndex = lastIndex;
-             _vm.CountForm += 1;
-         }
-
-         private void newTab_OnClick(object sender, RoutedEventArgs e)
-         {
-             int lastIndex = products.Items.Count - 1;
-             var tab_Item = Create_tab("google.com");
-             var test = products.Items[lastIndex];
-             products.Items[lastIndex] = tab_Item;
-             products.Items.Add(test);
-             products.SelectedIndex = lastIndex;
-             _vm.CountForm += 1;
+             if (e.Key == System.Windows.Input.Key.Enter)
+             {
+                 var browser = (ChromiumWebBrowser)((StackPanel)((StackPanel)((TextBox) sender).Parent).Parent).Children[1];
+                 browser.Load(((TextBox) sender).Text);
+             }
          }
     }
 }

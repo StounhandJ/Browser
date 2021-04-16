@@ -13,9 +13,9 @@ namespace Browser.ViewModels
         {
             get
             {
-                if (_countForm*_maxWidthItem>_WidthWindow-100)
+                if (_countForm*_maxWidthItem>_WidthWindow-125)
                 {
-                    return (_WidthWindow - 100) / _countForm;
+                    return (_WidthWindow - 125) / _countForm;
                 }
                 else
                 {
