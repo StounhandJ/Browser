@@ -25,6 +25,7 @@ namespace Browser
         ObservableCollection<Favorite> favorits;
         List<History> historys;
         private NotificationManager notificationManager = new NotificationManager();
+        private TabItem TabFocusable;
 
         public MainWindow()
         {
@@ -55,20 +56,21 @@ namespace Browser
             
         }
 
-        private void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
+        private async void Browser_OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
             historys.Add(new History{address = e.Url, date = DateTime.Now});
-            ManagementSave.saveHistoryJSON(historys);
+            await ManagementSave.saveHistoryJSON(historys);
         }
         
         private void Tab_OnFocusableChanged(object sender, RoutedEventArgs routedEventArgs)
         {
-            ((StackPanel) ((TabItem)sender).Header).Children[1].Visibility = Visibility.Visible;
+            ((StackPanel)((ContentControl)((TabItem)sender).Header).Content).Children[1].Visibility = Visibility.Visible;
+            TabFocusable = (TabItem)sender;
         }
 
         private void Tab_OnMouseDown(object sender, MouseEventArgs mouseEventArgs)
         {
-            ((StackPanel) ((TabItem)sender).Header).Children[1].Visibility = Visibility.Hidden;
+            ((StackPanel)((ContentControl)((TabItem)sender).Header).Content).Children[1].Visibility = Visibility.Hidden;
         }
 
         private void Tab_ClickClose(object sender, RoutedEventArgs e)
@@ -140,13 +142,14 @@ namespace Browser
             stack_PanelContent.Children.Add(WebBrowser);
             
             // --- Заголовок --- //
-            
+            ContentControl contentControl_Header = new ContentControl();
             StackPanel stack_PanelHeader = new StackPanel{Orientation = Orientation.Horizontal};
             TextBlock text_Block = new TextBlock
             {
                 Margin = new Thickness(5),
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
+            text_Block.KeyUp += Address_OnKeyUp;
             text_Block.SetBinding(TextBlock.TextProperty, new Binding{Path = new PropertyPath("WebBrowser.Title"), Source = WebBrowser});
             text_Block.SetBinding(TextBlock.MaxWidthProperty, new Binding{Path = new PropertyPath("MaxWidthTextBlock")});
             stack_PanelHeader.Children.Add(text_Block);
@@ -161,16 +164,32 @@ namespace Browser
             CloseButton.SetBinding(Button.WidthProperty, new Binding{Path = new PropertyPath("WidthButtonClose")});
             CloseButton.Click += Tab_ClickClose;
             stack_PanelHeader.Children.Add(CloseButton);
+            contentControl_Header.Content = stack_PanelHeader;
+            ContextMenu ContextMenu_header = new ContextMenu();
+            MenuItem MenuItem_Duplicate = new MenuItem{Header = "Дублировать"};
+            MenuItem_Duplicate.Click += DuplicateTab_OnClick;
+            ContextMenu_header.Items.Add(MenuItem_Duplicate);
+            contentControl_Header.ContextMenu = ContextMenu_header;
 
             // --- Формирование TabItem --- //
             TabItem tab_Item = new TabItem();
             tab_Item.SetBinding(TabItem.MaxWidthProperty, new Binding{Path = new PropertyPath("MaxWidthItem")});
             tab_Item.MouseEnter += Tab_OnFocusableChanged;
             tab_Item.MouseLeave += Tab_OnMouseDown;
-            tab_Item.Header = stack_PanelHeader;
+            tab_Item.Header = contentControl_Header;
             tab_Item.Content = stack_PanelContent;
             return tab_Item;
         }
+
+         private TabItem getFocusableTabItem()
+         {
+             return TabFocusable;
+         }
+
+         private ChromiumWebBrowser getChromiumWebBrowser(TabItem tabitem)
+         {
+             return (ChromiumWebBrowser)((StackPanel)tabitem.Content).Children[1];
+         }
 
          private void Window_ClickClose(object sender, RoutedEventArgs e)
          {
@@ -205,7 +224,7 @@ namespace Browser
              _vm.CountForm += 1;
          }
 
-         private void AddDelFavorite_OnClick(object sender, RoutedEventArgs e)
+         private async void AddDelFavorite_OnClick(object sender, RoutedEventArgs e)
          {
              var browser = ((ChromiumWebBrowser)((StackPanel)((StackPanel)((Button)sender).Parent).Parent).Children[1]);
              try
@@ -228,7 +247,7 @@ namespace Browser
                      Type = NotificationType.Success
                  });
              }
-             ManagementSave.saveFavoriteJSON(favorits);
+             await ManagementSave.saveFavoriteJSON(favorits);
          }
 
          private int historyIndex = 0;
@@ -268,6 +287,17 @@ namespace Browser
                  Message = text,
                  Type = NotificationType.Information
              });
+         }
+
+         private void DuplicateTab_OnClick(object sender, RoutedEventArgs e)
+         {
+             int lastIndex = products.Items.Count - 1;
+             var tab_Item = Create_tab(getChromiumWebBrowser(getFocusableTabItem()).Address);
+             var test = products.Items[lastIndex];
+             products.Items[lastIndex] = tab_Item;
+             products.Items.Add(test);
+             products.SelectedIndex = lastIndex;
+             _vm.CountForm += 1;
          }
     }
 }

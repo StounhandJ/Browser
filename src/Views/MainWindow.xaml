@@ -45,10 +45,19 @@
                 <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
                     <TabItem MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
                         <TabItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock MaxWidth="{Binding MaxWidthTextBlock}" Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
-                                <Button HorizontalAlignment="Right" Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="{Binding WidthButtonClose}" Background="Transparent" />
-                            </StackPanel>
+                            <ContentControl>
+                                <ContentControl.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Дублировать" Click="DuplicateTab_OnClick"/>
+                                    </ContextMenu>
+                                </ContentControl.ContextMenu>
+                                <ContentControl.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock MaxWidth="{Binding MaxWidthTextBlock}" Margin="3" Text="{Binding WebBrowser.Title , ElementName=Browser}"></TextBlock>
+                                        <Button HorizontalAlignment="Right" Click="Tab_ClickClose" Visibility="Hidden" BorderThickness="0" FontSize="10" Content="✖" Height="20" Width="{Binding WidthButtonClose}" Background="Transparent" />
+                                    </StackPanel>
+                                </ContentControl.Content>
+                            </ContentControl>
                         </TabItem.Header>
                         <TabItem.Content>
                             <StackPanel>
