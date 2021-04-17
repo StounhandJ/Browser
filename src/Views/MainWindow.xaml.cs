@@ -9,9 +9,12 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Browser.ViewModels;
 using CefSharp;
 using CefSharp.Wpf;
+using Dsafa.WpfColorPicker;
+using Microsoft.Win32;
 using Notifications.Wpf;
 
 namespace Browser
@@ -221,6 +224,28 @@ namespace Browser
             }
 
             historyIndex = historys.Count() - 1;
+        }
+        
+        private void MenuSettingColor_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ColorPickerDialog();
+            var result = dialog.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                _vm.BackgroundStyle = (SolidColorBrush)(new BrushConverter().ConvertFrom(dialog.Color.ToString()));
+                GridMain.SetBinding(Grid.BackgroundProperty, "BackgroundStyle");
+            }
+        }
+        
+        private void MenuSettingImg_OnClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Title = "Select a picture";
+            dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";
+            if (dlg.ShowDialog() == true)
+            {
+                GridMain.Background = new ImageBrush{ImageSource = new BitmapImage(new Uri(dlg.FileName))};;
+            }
         }
 
         private void GridHistoryClose_OnClick(object sender, RoutedEventArgs e)

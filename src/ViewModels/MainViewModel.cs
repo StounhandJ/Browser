@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Media;
 
 
 namespace Browser.ViewModels
@@ -150,6 +151,23 @@ namespace Browser.ViewModels
             set 
             {
                 
+            }
+        }
+
+        private SolidColorBrush _background = Brushes.LightSeaGreen;
+        
+        public SolidColorBrush BackgroundStyle 
+        {
+            get
+            {
+                return _background;
+            }
+            set 
+            {
+                if (_background == value) return;
+
+                _background = value;
+                this.OnPropertyChanged("BackgroundStyle");
             }
         }
         public void update()

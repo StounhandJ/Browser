@@ -18,19 +18,8 @@
             BorderBrush="#395984"
             BorderThickness="1"
             CornerRadius="0,20,30,40" >
-        <Border.Background>
-            <LinearGradientBrush >
-                <GradientBrush.GradientStops>
-                    <GradientStopCollection>
-                        <GradientStop Color="#E7EBF7" Offset="0.0"/>
-                        <GradientStop Color="#CEE3FF" Offset="0.5"/>
-  
-                    </GradientStopCollection>
-                </GradientBrush.GradientStops>
-            </LinearGradientBrush>
-        </Border.Background>
         <Grid>
-            <Grid Name="GridMain" Background="LightSeaGreen">
+            <Grid Name="GridMain" Background="{Binding BackgroundStyle}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35" />
                     <RowDefinition />
@@ -99,8 +88,12 @@
                 
                 <Menu Grid.Row="0" Grid.Column="1" Foreground="LightYellow" Background="Transparent">
                     <MenuItem Header="⋮" FontSize="25">
-                        <MenuItem Name="MenuHistory" FontSize="15" Background="LightSeaGreen" Header="История" Click="MenuHistoryVisible_OnClick"/>
-                        <MenuItem Name="MenuFavorits" FontSize="15" Background="LightSeaGreen" Header="Закладки" >
+                        <MenuItem Name="MenuSetting" FontSize="15" Background="{Binding BackgroundStyle}" Header="Настройки">
+                            <MenuItem Name="MenuSettingColor" FontSize="15" Background="{Binding BackgroundStyle}" Header="Сменить цвет" Click="MenuSettingColor_OnClick"/>
+                            <MenuItem Name="MenuSettingImg" FontSize="15" Background="{Binding BackgroundStyle}" Header="Сменить картинку" Click="MenuSettingImg_OnClick"/>
+                        </MenuItem>
+                        <MenuItem Name="MenuHistory" FontSize="15" Background="{Binding BackgroundStyle}" Header="История" Click="MenuHistoryVisible_OnClick"/>
+                        <MenuItem Name="MenuFavorits" FontSize="15" Background="{Binding BackgroundStyle}" Header="Закладки" >
                             <MenuItem.ItemTemplate>
                                 <DataTemplate>
                                     <MenuItem Click="OpenTabFavorite_OnClick" FontSize="15" Background="LightSeaGreen" Header="{Binding title}" Uid="{Binding address}"/>
