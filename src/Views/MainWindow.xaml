@@ -11,15 +11,13 @@
         MinWidth="680"
         MinHeight="300"
         WindowStyle="None" ResizeMode="CanResizeWithGrip" AllowsTransparency="True"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown"
     >
     <Border Width="Auto" Height="Auto" Name="windowFrame"
-    
             BorderBrush="#395984"
             BorderThickness="1"
             CornerRadius="0,20,30,40" >
         <Grid>
-            <Grid Name="GridMain" Background="{Binding BackgroundStyle}">
+            <Grid MouseLeftButtonDown="Window_MouseLeftButtonDown" Name="GridMain" Background="{Binding BackgroundStyle}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35" />
                     <RowDefinition />
@@ -38,7 +36,7 @@
                         </ContextMenu>
                 </Grid.ContextMenu>
                 <TabControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" x:Name="products" SelectionChanged="AddTab_OnMouseDown" Padding="0">
-                    <TabItem MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
+                    <TabItem AllowDrop="True" PreviewMouseMove="StartTab_OnPreviewMouseMove" Drop="TabItem_Drop" MaxWidth="{Binding MaxWidthItem}" x:Name="startTab" Height="30" MouseEnter="Tab_OnFocusableChanged" MouseLeave="Tab_OnMouseDown">
                         <TabItem.Header>
                             <ContentControl>
                                 <ContentControl.ContextMenu>
@@ -109,9 +107,6 @@
                     <RowDefinition Height="35" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
                 <Button Click="GridHistoryClose_OnClick" Content="🢀" BorderBrush="Aqua" BorderThickness="1 0 0 2" FontSize="15" Background="Transparent"/>
                 <ListView Name="ListViewHistory" MouseDoubleClick="ListBoxHistory_OnMouseDoubleClick" Width="{Binding WidthWindow}" Height="2000" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top">
                     <ListView.ContextMenu>

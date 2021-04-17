@@ -138,6 +138,9 @@ namespace Browser
             tab_Item.SetBinding(TabItem.MaxWidthProperty, new Binding{Path = new PropertyPath("MaxWidthItem")});
             tab_Item.MouseEnter += Tab_OnFocusableChanged;
             tab_Item.MouseLeave += Tab_OnMouseDown;
+            tab_Item.Drop += TabItem_Drop;
+            tab_Item.PreviewMouseMove += StartTab_OnPreviewMouseMove;
+            tab_Item.AllowDrop = true;
             tab_Item.Header = contentControl_Header;
             tab_Item.Content = stack_PanelContent;
             return tab_Item;
@@ -366,6 +369,53 @@ namespace Browser
              {
                  var browser = (ChromiumWebBrowser)((StackPanel)((StackPanel)((TextBox) sender).Parent).Parent).Children[1];
                  browser.Load(((TextBox) sender).Text);
+             }
+         }
+
+         private void StartTab_OnPreviewMouseMove(object sender, MouseEventArgs e)
+         {
+             var tabItem = e.Source as TabItem;
+
+
+             if (tabItem == null)
+                 return;
+
+             if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
+                 try
+                 {
+                     DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
+                 }
+                 catch (Exception exception)
+                 {
+                     // ignored
+                 }
+         }
+         
+         private void TabItem_Drop(object sender, DragEventArgs e)
+         {
+             var tabItemTarget = e.Source as TabItem;
+             var tabItemSource = e.Data.GetData(typeof(TabItem)) as TabItem;
+
+
+
+             if (!tabItemTarget.Equals(tabItemSource))
+             {
+                 int sourceIndex = products.Items.IndexOf(tabItemSource);
+                 int targetIndex = products.Items.IndexOf(tabItemTarget);
+
+
+
+                 products.Items.Remove(tabItemSource);
+                 products.Items.Insert(targetIndex, tabItemSource);
+
+
+
+                 products.Items.Remove(tabItemTarget);
+                 products.Items.Insert(sourceIndex, tabItemTarget);
+
+
+
+                 products.SelectedIndex = targetIndex;
              }
          }
     }
